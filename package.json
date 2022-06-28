@@ -1,0 +1,8 @@
+{
+  "name": "basic-discord-example",
+  "author": "kychong0403",
+  "publish": false,
+  "dependencies": {
+    "lib": "latest"
+  }
+}

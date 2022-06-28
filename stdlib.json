@@ -1,0 +1,72 @@
+{
+  "name": "kychong0403/basic-discord-example",
+  "timeout": 10000,
+  "connector": false,
+  "events": {
+    "functions/events/autocode/self/deployed.js": {
+      "name": "autocode.self.deployed"
+    },
+    "functions/events/discord/command/roll.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "roll"
+      }
+    },
+    "functions/events/discord/command/claim.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "claim"
+      }
+    },
+    "functions/events/scheduler/xhourly.js": {
+      "name": "scheduler.xhourly",
+      "subtype": {
+        "frequency": "12 hours",
+        "offset": "00:00 (12:00am)"
+      }
+    },
+    "functions/events/discord/command/check.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "check"
+      }
+    },
+    "functions/events/discord/command/edit-status.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "edit-status"
+      }
+    },
+    "functions/events/discord/command/send-msg.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "send-msg"
+      }
+    },
+    "functions/events/discord/command/intro.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "intro"
+      }
+    },
+    "functions/events/discord/command/ranking.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "ranking"
+      }
+    },
+    "functions/events/discord/bot_mention.js": {
+      "name": "discord.bot_mention"
+    }
+  },
+  "env": [
+    {
+      "name": "DC_HINORPIO_ID",
+      "description": ""
+    },
+    {
+      "name": "DC_LONE_ID",
+      "description": ""
+    }
+  ]
+}
