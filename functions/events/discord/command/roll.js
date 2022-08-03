@@ -1,88 +1,16 @@
 // authenticates you with the API standard library
 // type `await lib.` to display API autocomplete
 const lib = require("lib")({ token: process.env.STDLIB_SECRET_TOKEN });
+const create = require('../../helper/create.js');
 
-if(!(context.params.event.channel_id === "986410134894940240" || context.params.event.channel_id === "986603537788186644") ){
-  throw "You cannot perform command in this channel"
+// if(!(context.params.event.channel_id === "986410134894940240" || context.params.event.channel_id === "986603537788186644") ){
+// throw "You cannot perform command in this channel"
+// }
+if (context.params.event.channel_id !== "986603537788186644") {
+  throw "You cannot perform command in this channel";
 }
 
-async function checkUserExist() {
-  let res = await lib.googlesheets.query["@0.3.0"].count({
-    range: `A:J`,
-    bounds: "FIRST_EMPTY_ROW",
-    where: [
-      {
-        user_id__is: `${context.params.event.member.user.id}`,
-      },
-    ],
-    limit: {
-      count: 0,
-      offset: 0,
-    },
-  });
-  return res.count;
-}
-
-async function createNewUser() {
-  let res = await lib.googlesheets.query["@0.3.0"].insert({
-    range: `A:M`,
-    fieldsets: [
-      {
-        user_id: `${context.params.event.member.user.id}`,
-        nick_name: `${context.params.event.member.nick}`,
-        user_name: `${context.params.event.member.user.username}`,
-        s_iblis: `0`,
-        s_milae: `0`,
-        s_noel: `0`,
-        s_aridya: `0`,
-        sr: `0`,
-        r: `0`,
-        n: `0`,
-        rolls: `100`,
-        daily_free_rolls: "1",
-      },
-    ],
-  });
-}
-
-let userExist = await checkUserExist();
-
-let userCreated;
-if (userExist == 0) {
-  try {
-    await createNewUser();
-    let message = await lib.discord.channels["@0.3.1"].messages.create({
-      channel_id: `${context.params.event.channel_id}`,
-      content: `<@!${context.params.event.member.user.id}> 承知，凜月將潛入抽卡池`,
-      tts: false,
-    });
-  } catch (e) {
-    //TODO
-    let message = await lib.discord.channels["@0.3.1"].messages.create({
-      channel_id: `${context.params.event.channel_id}`,
-      content: [`嗶嗶`].join("\n"),
-      embed: {
-        title: `<@!${context.params.event.member.user.id}>抱歉主人，抽卡機貌似故障了`,
-        type: "rich",
-        color: 0x0000aa, // Blue color
-        // description: 'You could add some information here for guild members to view!',
-        fields: [
-          {
-            name: "故障代碼",
-            value: [
-              `Error code: 101`,
-              `Error: ${e}`,
-              `故障訊息: 無法創建用戶`,
-              "請你聯繫Lone",
-            ],
-          },
-        ],
-      },
-      tts: false,
-    });
-    throw e;
-  }
-}
+await create.checkUser(context.params.event.member.user.id,context.params.event.member.nick,context.params.event.member.user.username,context.params.event.channel_id);
 
 // let ssr = [ "夏日 伊布力斯" , "夏日 聖米勒",
 // "夏日 黑白諾艾莉", "夏日 阿爾蒂雅"];
@@ -97,13 +25,32 @@ if (userExist == 0) {
 // "史萊姆娘 蘿爾", "牛女 米諾", "蛇女 拉米亞", "鳥身女妖 哈比", "法斯精銳近衛 安娜", "法斯精銳騎士 布蘭", "法斯精銳法師 諾諾可",
 // "懲戒天使", "福音天使", "試作機三號"];
 
-// you can write whatever javascript you'd like
-// logs are visible from the [? Help] popup on right
 let ssr = [
-  "<:face_iblis06:983334594122240050> 夏日 伊布力斯",
-  "<:face_hshs03:983334661491134525> 夏日 聖米勒",
-  "<:face_noel03:983334725437489222> 夏日 黑白諾艾莉",
-  "<:face_aridya02:983334741442973716> 夏日 阿爾蒂雅",
+  "<:face_ichika01:996211665953620048> 雪姬 初華",
+  "<:face_kana01:996211600950308934> 花魁 香奈",
+];
+let nonLimitedssr = [
+  "<:face_baal03:856758569000632380> 魔王 巴爾",
+  "<:face_satan01:856202436619403294> 魔王 撒旦",
+  "<:face_iblis01:856202436821254184> 魔王 伊布力斯",
+  "<:face_salucia01:856202436720590878> 精靈王 賽露西亞",
+  "<:face_lana01:856202436463820810> 矮人王 蘭兒",
+  "<:face_lulu02:856202436859002890> 法斯公主 露露",
+  "<:face_ks01:856202436275339294> 魔人偶 KS-VIII",
+  "<:face_mesmiia01:856202437005279263> 智慧毛毛蟲 梅絲米奈雅",
+  "<:face_chizuru01:856202436476534785> 復生公主 千鶴",
+  "<:face_daphne01:856202436582703156> 煌星 妲絲艾菲娜",
+  "<:face_hshs02:872468146857078855> 天使長 聖米勒",
+  "<:face_aridya01:879959498771537950> 食夢 阿爾蒂雅",
+  "<:face_lotiya01:879959543315070977> 千年血族 洛緹亞",
+  "<:face_karina01:892790160796827669> 墮龍 凱茜菲娜",
+  "<:face_Ibuki01:898520459526688768> 極樂之鬼 伊吹朱點",
+  "<:face_inori01:910370419893223455> 音速魅影 祈",
+  "<:face_miru01:950349904197328907> 貓娘Vtuber 杏仁咪嚕",
+  "<:face_uruta01:950350092852928542> 古代勇者 烏魯塔",
+  "<:face_ayane01:951824411483320390> 現代勇者 神田綾音",
+  "<:face_muila01:952915736190390272> 未來勇者 牧愛菈",
+  "<:face_faya01:971961353109635153> 高等魔族 法雅",
 ];
 let sr = [
   "<:face_ik01:856202436162617385> 魔管家 艾可",
@@ -131,8 +78,9 @@ let r = [
   "<:IMG_4763:986446383613636638> 暗黑精靈 索拉卡",
   // "<:face_panana03:957588087658147880> 南瓜仙子 帕奈奈",
   "<:face_Sophie01:914060282748342283> 人馬女僕 蘇菲",
-  "<:face_jolina01:915842751940141056> 冷豔美醫 嘉莉娜",
+  "<:face_jolina01:915842751940141056> 冷豔美醫 嘉莉娜"
 ];
+let specialR = "<:face_mia01:996211778126106756> 怪盜 米雅";
 let n = [
   "<:face_saria01:862655188996325396> 法斯帝國士兵 賽蓮",
   "<:IMG_4768:986446433282576434> 法斯帝國法師 佩托拉",
@@ -158,10 +106,10 @@ let n = [
 ];
 
 let tenRolls = [];
-let sIblis = 0;
-let sMilae = 0;
-let sNoel = 0;
-let sAridya = 0;
+let ichika = 0;
+let kana = 0;
+let specialRCounter = 0;
+let ssrCount = 0;
 let srCount = 0;
 let rCount = 0;
 let nCount = 0;
@@ -169,7 +117,7 @@ let nCount = 0;
 async function getUserData() {
   try {
     let res = await lib.googlesheets.query["@0.3.0"].select({
-      range: `A:M`,
+      range: `A:P`,
       bounds: "FIRST_EMPTY_ROW",
       where: [
         {
@@ -221,47 +169,74 @@ if (userData.rolls == 0) {
   return message;
 }
 
+let limitedCounter = parseInt(userData.limited_counter);
+
 let ssrTracking = 0;
 let srTracking = 0;
-let nrTracking = 0;
+let rTracking = 0;
+let nTracking = 0;
 
 for (let i = 0; i < 10; i++) {
   let chance = Math.random() * 100;
-  if (chance < 1.6) {
+  if (chance < 1) {
     let summerSSR = ssr[Math.floor(Math.random() * ssr.length)];
     switch (summerSSR) {
-      case "<:face_iblis06:983334594122240050> 夏日 伊布力斯":
-        sIblis += 1;
+      case "<:face_ichika01:996211665953620048> 雪姬 初華":
+        ichika += 1;
         break;
-      case "<:face_hshs03:983334661491134525> 夏日 聖米勒":
-        sMilae += 1;
-        break;
-      case "<:face_noel03:983334725437489222> 夏日 黑白諾艾莉":
-        sNoel += 1;
-        break;
-      case "<:face_aridya02:983334741442973716> 夏日 阿爾蒂雅":
-        sAridya += 1;
+      case "<:face_kana01:996211600950308934> 花魁 香奈":
+        kana += 1;
         break;
     }
+    limitedCounter = 0;
     ssrTracking += 1;
     tenRolls.push("<:rarity_ssr:933339183848763412> " + summerSSR);
-  } else if (chance < 11.6) {
+  } else if (chance < 2) {
+    if (limitedCounter == 2) {
+      let summerSSR = ssr[Math.floor(Math.random() * ssr.length)];
+      switch (summerSSR) {
+        case "<:face_ichika01:996211665953620048> 雪姬 初華":
+          ichika += 1;
+          break;
+        case "<:face_kana01:996211600950308934> 花魁 香奈":
+          kana += 1;
+          break;
+      }
+      limitedCounter = 0;
+      ssrTracking += 1;
+      tenRolls.push("<:rarity_ssr:933339183848763412> " + summerSSR);
+    } else {
+      let nolimitssr =
+        nonLimitedssr[Math.floor(Math.random() * nonLimitedssr.length)];
+      ssrTracking += 1;
+      ssrCount += 1;
+      limitedCounter += 1;
+      tenRolls.push("<:rarity_ssr:933339183848763412> " + nolimitssr);
+    }
+  } else if (chance < 10) {
     srCount += 1;
     srTracking += 1;
     tenRolls.push(
       "<:rarity_sr:933339169105772585> " +
         sr[Math.floor(Math.random() * sr.length)]
     );
-  } else if (chance < 43.6) {
+  } else if (chance < 20) {
+    specialRCounter += 1;
+    rTracking += 1;
+    tenRolls.push(
+      "<:rarity_r:933339085639147551> " +
+        specialR
+    );
+  } else if (chance < 42) {
     rCount += 1;
-    nrTracking += 1;
+    rTracking += 1;
     tenRolls.push(
       "<:rarity_r:933339085639147551> " +
         r[Math.floor(Math.random() * r.length)]
     );
   } else {
     nCount += 1;
-    nrTracking += 1;
+    nTracking += 1;
     tenRolls.push(
       "󠀠󠀠<:rarity_n:933338968873918554> " +
         n[Math.floor(Math.random() * n.length)]
@@ -269,18 +244,19 @@ for (let i = 0; i < 10; i++) {
   }
 }
 
-userData.s_iblis = parseInt(userData.s_iblis) + sIblis;
-userData.s_milae = parseInt(userData.s_milae) + sMilae;
-userData.s_noel = parseInt(userData.s_noel) + sNoel;
-userData.s_aridya = parseInt(userData.s_aridya) + sAridya;
+userData.ichika = parseInt(userData.ichika) + ichika;
+userData.kana = parseInt(userData.kana) + kana;
+userData.mia = parseInt(userData.mia) + specialRCounter;
+userData.ssr = parseInt(userData.ssr) + ssrCount;
 userData.sr = parseInt(userData.sr) + srCount;
 userData.r = parseInt(userData.r) + rCount;
 userData.n = parseInt(userData.n) + nCount;
 userData.rolls = parseInt(userData.rolls) - 10;
+userData.limited_counter = limitedCounter;
 
 async function insertRolls() {
   let res = await lib.googlesheets.query["@0.3.0"].update({
-    range: `A:M`,
+    range: `A:P`,
     bounds: "FIRST_EMPTY_ROW",
     where: [
       {
@@ -292,14 +268,15 @@ async function insertRolls() {
       offset: 0,
     },
     fields: {
-      s_iblis: `${userData.s_iblis}`,
-      s_milae: `${userData.s_milae}`,
-      s_noel: `${userData.s_noel}`,
-      s_aridya: `${userData.s_aridya}`,
+      ichika: `${userData.ichika}`,
+      kana: `${userData.kana}`,
+      mia: `${userData.mia}`,
+      ssr: `${userData.ssr}`,
       sr: `${userData.sr}`,
       r: `${userData.r}`,
       n: `${userData.n}`,
       rolls: `${userData.rolls}`,
+      limited_counter: `${userData.limited_counter}`,
     },
   });
   return res;
@@ -327,22 +304,40 @@ try {
   throw e;
 }
 
-let rollMessageList = [
-  `<@!${context.params.event.member.user.id}> 十抽`,
-];
+const imgN =
+  "https://cdn.discordapp.com/attachments/986410134894940240/992127983882076250/N.gif";
+const imgR =
+  "https://cdn.discordapp.com/attachments/986410134894940240/992134724996837406/R.gif";
+const imgSR =
+  "https://cdn.discordapp.com/attachments/986410134894940240/992132605812154449/sr_no_slow.gif";
+const imgSSR =
+  "https://cdn.discordapp.com/attachments/986410134894940240/992117690422538320/ssr_slow.gif";
+
+let imgUrl;
+
+if (ssrTracking > 0) {
+  imgUrl = imgSSR;
+} else if (srTracking > 0) {
+  imgUrl = imgSR;
+} else if (rTracking > 0) {
+  imgUrl = imgR;
+} else {
+  imgUrl = imgN;
+}
+
+let rollMessageList = [`<@!${context.params.event.member.user.id}> 十抽`];
 let chosenMessage;
 
 if (ssrTracking > 2) {
-chosenMessage = `<@!${context.params.event.member.user.id}> 大收穫，三金得來不易！凱薩大人 `;
+  chosenMessage = `<@!${context.params.event.member.user.id}> 大收穫，三金得來不易！凱薩大人 `;
 } else if (ssrTracking == 2) {
   chosenMessage = `<@!${context.params.event.member.user.id}> 不愧是凱薩大人，抽SSR就跟抓女人一樣簡單…`;
 } else if (ssrTracking == 1) {
   chosenMessage = `<@!${context.params.event.member.user.id}> 能夠從暗黑的卡池中畢業，恭喜凱薩大人！`;
 } else if (srTracking > 0) {
   chosenMessage = `<@!${context.params.event.member.user.id}> 這次的收穫不小，凱薩大人`;
-} else if (nrTracking == 10) {
-  chosenMessage =
-    `<@!${context.params.event.member.user.id}> 凱薩大人，有您的非洲才有其他人的歐洲，凜月深信，下次會更好的。`;
+} else if (nTracking + rTracking == 10) {
+  chosenMessage = `<@!${context.params.event.member.user.id}> 凱薩大人，有您的非洲才有其他人的歐洲，凜月深信，下次會更好的。`;
 } else {
   chosenMessage =
     rollMessageList[Math.floor(Math.random() * rollMessageList.length)];
@@ -359,11 +354,16 @@ let message = await lib.discord.channels["@0.3.1"].messages.create({
     // description: 'You could add some information here for guild members to view!',
     fields: [
       {
-        name: "十抽結果：",
-        value: [tenRolls.join("\n")].join("\n") + "\n\n剩餘抽卷： " +userData.rolls,
+        name: "十抽結果\n-------------------------------------",
+        value:
+          [tenRolls.join("\n")].join("\n") + "\n\n剩餘抽卷： " + userData.rolls,
       },
     ],
+    image: {
+      url: imgUrl,
+    },
   },
+
   tts: false,
 });
 
